@@ -36,7 +36,14 @@ import {
 } from "variables/Variables.jsx";
 
 
-const buttonNames=['Start Sensor','Configuring...','Stop sensor'];
+const buttonNames=['Start sensor','Configuring...','Stop sensor'];
+
+const buttonStyle = {
+  margin: '10px',
+  width: '110px',
+  height: '40px'
+};
+
 class Dashboard extends Component {
     constructor() {
     super();
@@ -107,7 +114,9 @@ class Dashboard extends Component {
             </Col>
             <Col lg={3} sm={6}>
 	    <Row>
-	    <button onClick={() => {
+	    <button style={buttonStyle} onClick={() => {
+      if(this.index == 1)
+         return;
       this.wsCon.send(this.state.buttonName);
       this.index =(this.index+1)%3;
       this.setState({buttonName:buttonNames[this.index]});
@@ -116,7 +125,7 @@ class Dashboard extends Component {
 	    <Row>
 	    </Row>
 	    <Row>
-	    <button onClick={() => { this.wsCon.send('PeopleCount'); }}>PeopleCount</button>
+	    <button style={buttonStyle} onClick={() => { this.wsCon.send('PeopleCount'); }}>PeopleCount</button>
 	    </Row>
             </Col>
           </Row>
