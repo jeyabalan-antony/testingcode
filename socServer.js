@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
 const serial = require('./serialPortCom/serial');
+const shell = require('shelljs');
 
 //config commands to configure
 //TODO need to move to a seperate file
@@ -49,30 +50,44 @@ wss.on('connection', function connection(ws) {
     console.log("Inside the connection");
     
     const serialPortObj = new serial(ws);
-    serialPortObj.open(uartPort);
-    serialPortObj.open(comPort);
 
     ws.on('message', function incoming(message) {
-        if (message == 'Start') {
+        if (message == 'Start sensor') {
+            serialPortObj.open(uartPort);
+            serialPortObj.open(comPort);
             var i = 1;
             var time = 1000;
             configcmds.forEach(dat => {
-
                 setTimeout(function () {
                     console.log(dat);
                     serialPortObj.write(uartPort,dat);
                 }, time * i);
                 i++;
             });
+            i=1;
         }
+
+	if(message == 'Stop sensor'){
+           serialPortObj.write(uartPort,'sensorStop\n');
+           serialPortObj.close(uartPort);
+           serialPortObj.close(comPort);
+	}
+
+	if(message == 'PeopleCount'){
+	   shell.exec('/home/pi/R2/PeopleCount.sh')
+	}
 
         console.log('received: %s', message);
     });
 
     ws.on('close', function closing() {
+        serialPortObj.write(uartPort,'sensorStop\n');
         serialPortObj.close(uartPort);
         serialPortObj.close(comPort);
     });
 
     //ws.send('something');
 });
+
+
+console.log("Server started")
