@@ -172,9 +172,6 @@ module.exports = class serial {
                     if (this.openPortCache.has(comName)) {
                         this.openPortCache.delete(comName);
                     }
-                    this._triggerEvent("serialClose", {
-                        port: portInfoAndOpenOptions,
-                    });
                 });
                 serialPort.on("data", (data) => {
                     //console.log(data.toString('utf8'));
@@ -206,4 +203,3 @@ module.exports = class serial {
         }
     }
 }
-
